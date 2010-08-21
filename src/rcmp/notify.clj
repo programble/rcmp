@@ -12,18 +12,17 @@
   [(str payload)])
 
 (defn notify [server port channel payload]
-  (dosync
-   (if-let [irc (get @irc-connections server)]
-     (do
-       (when-not (in-channel? irc channel)
-         (join-chan irc channel))
-       (doseq [line (format-notification payload)]
-         (send-message irc channel line)))
-     (let [irc (connect (create-irc {:name "RCMP" :server server :port port :fnmap {}}) :channels [channel])]
-       (swap! irc-connections assoc server irc)
-       (Thread/sleep 10000)
-       (doseq [line (format-notification payload)]
-         (send-message irc channel line))))))
+  (if-let [irc (get @irc-connections server)]
+    (do
+      (when-not (in-channel? irc channel)
+        (join-chan irc channel))
+      (doseq [line (format-notification payload)]
+        (send-message irc channel line)))
+    (let [irc (connect (create-irc {:name "RCMP" :server server :port port :fnmap {}}) :channels [channel])]
+      (swap! irc-connections assoc server irc)
+      (Thread/sleep 10000)
+      (doseq [line (format-notification payload)]
+        (send-message irc channel line)))))
 
 (defroutes notify-routes
   (POST ["/:server/:port/:channel"
