@@ -1,8 +1,14 @@
 (ns rcmp.web
   (:use rcmp.notify
-        compojure.core))
+        compojure.core
+        [hiccup core page-helpers]))
 
-; TODO: Build a nice web interface
+(defn home []
+  (html [:head
+          [:title "RCMP"]]
+         [:body
+          [:h1 "RCMP"]
+          [:p "RCMP is a Github commit notification IRC bot."]]))
 
 (defroutes web-routes
-  (GET "/" [] (->> (keys @irc-connections) (interpose " ") (apply str))))
+  (GET "/" [] (home)))
