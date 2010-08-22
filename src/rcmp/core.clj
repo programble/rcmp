@@ -4,7 +4,7 @@
         ring.adapter.jetty))
 
 (defroutes all-routes
-  web-routes
-  notify-routes)
+  #'web-routes
+  #'notify-routes)
 
 (defonce server (run-jetty #'all-routes {:port 8080 :join? false}))

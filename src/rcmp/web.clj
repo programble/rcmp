@@ -1,5 +1,8 @@
 (ns rcmp.web
-  (:use compojure.core))
+  (:use rcmp.notify
+        compojure.core))
+
+; TODO: Build a nice web interface
 
 (defroutes web-routes
-  (GET "/" [] "<p>Nothing to see here, yet.</p>"))
+  (GET "/" [] (->> (keys @irc-connections) (interpose " ") (apply str))))
