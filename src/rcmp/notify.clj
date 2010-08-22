@@ -25,14 +25,27 @@
        (:message commit)))
 
 (defn format-notification [payload]
-  (for [commit (:commits payload)]
-    (str (:name (:owner (:repository payload)))
-         "/"
-         (:name (:repository payload))
-         ":"
-         (->> (:ref payload) (split #"/") (last))
-         " "
-         (format-commit commit))))
+  (if (> (count (:commits payload)) 3)
+    (into [(str (:name (:owner (:repository payload)))
+                "/"
+                (:name (:repository payload))
+                ":"
+                (->> (:ref payload) (split #"/" (last)))
+                " "
+                (count (:commits payload))
+                " new commits <"
+                (is-gd (:compare payload))
+                ">")]
+          (for [commit (:commits payload)]
+            (format-commit commit)))
+    (for [commit (:commits payload)]
+      (str (:name (:owner (:repository payload)))
+           "/"
+           (:name (:repository payload))
+           ":"
+           (->> (:ref payload) (split #"/") (last))
+           " "
+           (format-commit commit)))))
          
 (defn notify [server port channel payload]
   (if-let [irc (get @irc-connections server)]
