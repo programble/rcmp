@@ -1,6 +1,5 @@
 (ns rcmp.core
-  (:use rcmp.notify
-        rcmp.web
+  (:use [rcmp notify web]
         [compojure.core :only [defroutes]]
         ring.adapter.jetty))
 
