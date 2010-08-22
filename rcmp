@@ -1,2 +1,2 @@
 #!/bin/bash
-java -cp lib/*:src/ clojure.main -e "(use 'rcmp.core)"
+java -XX:ReservedCodeCacheSize=16m -XX:MaxPermSize=16m -XX:MinHeapFreeRatio=40 -Xms2m -Xmx2m -cp lib/*:src/ clojure.main -e "(use 'rcmp.core)"
