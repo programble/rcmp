@@ -1,6 +1,8 @@
 (ns rcmp.notify
   (:use [compojure.core :only [defroutes POST]]
-        irclj.irclj)
+        irclj.irclj
+        rcmp.utilities
+        [clojure.contrib.string :only [split]])
   (:require [org.danlarkin [json :as json]]))
 
 (defonce irc-connections (atom {}))
@@ -9,7 +11,24 @@
   (some #(= % channel) (:channels @irc)))
 
 (defn format-notification [payload]
-  [(str payload)])
+  (for [commit (:commits payload)]
+    (->> [(:name (:owner (:repository payload)))
+          "/"
+          (:name (:repository payload))
+          ":"
+          (->> (:ref payload) (split #"/") (last))
+          " <"
+          (is-gd (:url commit))
+          "> "
+          (:name (:author commit))
+          ": ["
+          (interpose " " (flatten [(map #(str "+" %) (:added commit))
+                                   (map #(str "-" %) (:removed commit))
+                                   (map #(identity) (:modified commit))]))
+          "] "
+          (:message commit)]
+         (flatten)
+         (apply str))))
 
 (defn notify [server port channel payload]
   (if-let [irc (get @irc-connections server)]
