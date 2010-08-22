@@ -23,11 +23,11 @@
          (:name (:author commit))
          ": ["
          (apply str (interpose " " (flatten [(map #(str "+" %) (:added commit))
-                                       (map #(str "-" %) (:removed commit))
-                                       (map #(identity) (:modified commit))])))
+                                             (map #(str "-" %) (:removed commit))
+                                             (map #(identity %) (:modified commit))])))
          "] "
          (:message commit))))
-
+         
 (defn notify [server port channel payload]
   (if-let [irc (get @irc-connections server)]
     (do
