@@ -1,0 +1,2 @@
+#!/bin/bash
+java -cp lib/*:src/ clojure.main -e "(use 'rcmp.core)"
