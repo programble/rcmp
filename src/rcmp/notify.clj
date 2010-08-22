@@ -12,23 +12,21 @@
 
 (defn format-notification [payload]
   (for [commit (:commits payload)]
-    (->> [(:name (:owner (:repository payload)))
-          "/"
-          (:name (:repository payload))
-          ":"
-          (->> (:ref payload) (split #"/") (last))
-          " <"
-          (is-gd (:url commit))
-          "> "
-          (:name (:author commit))
-          ": ["
-          (interpose " " (flatten [(map #(str "+" %) (:added commit))
-                                   (map #(str "-" %) (:removed commit))
-                                   (map #(identity) (:modified commit))]))
-          "] "
-          (:message commit)]
-         (flatten)
-         (apply str))))
+    (str (:name (:owner (:repository payload)))
+         "/"
+         (:name (:repository payload))
+         ":"
+         (->> (:ref payload) (split #"/") (last))
+         " <"
+         (is-gd (:url commit))
+         "> "
+         (:name (:author commit))
+         ": ["
+         (apply str (interpose " " (flatten [(map #(str "+" %) (:added commit))
+                                       (map #(str "-" %) (:removed commit))
+                                       (map #(identity) (:modified commit))])))
+         "] "
+         (:message commit))))
 
 (defn notify [server port channel payload]
   (if-let [irc (get @irc-connections server)]
