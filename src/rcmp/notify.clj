@@ -42,14 +42,14 @@
         (send-message irc channel line)))))
 
 (defroutes notify-routes
-  (POST ["/:server/:port/:channel"
+  (POST ["/github/:server/:port/:channel"
          :server #".+"
          :port #"\d+"
          :channel #".+"]
         [server port channel payload]
         (notify server (read-string port) (str "#" channel) (json/decode-from-str payload))
         "Notification sent")
-  (POST ["/:server/:channel"
+  (POST ["/github/:server/:channel"
          :server #".+"
          :channel #".+"]
         [server channel payload]
