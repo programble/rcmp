@@ -1,6 +1,6 @@
 # RCMP
 
-A Github commit notification bot with a web front-end
+A Github commit notification bot with a web interface
 
 ## Usage
 
