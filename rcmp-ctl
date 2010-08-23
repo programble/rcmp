@@ -1,18 +1,22 @@
 #!/bin/bash
 
+DIR=$(dirname $(readlink -f $0))
+SCRIPT=$DIR/$(basename $0)
+RCMP=$DIR/rcmp
+
 case "$1" in
     start)
-        ./rcmp &
+        $RCMP &
         ;;
     stop)
         kill $(cat rcmp.pid)
         ;;
     restart)
-        $0 stop
-        $0 start
+        $SCRIPT stop
+        $SCRIPT start
         ;;
     update)
         git pull
-        $0 restart
+        $SCRIPT restart
         ;;
 esac
