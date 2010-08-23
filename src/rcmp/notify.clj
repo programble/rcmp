@@ -14,7 +14,9 @@
   (str (when url?
          (str "<" (is-gd (:url commit)) "> "))
        (:name (:author commit))
-       ": ["
+       ": "
+       (apply str (take 8 (:id commit)))
+       " ["
        (->> [(map #(str "+" %) (:added commit))
              (map #(str "-" %) (:removed commit))
              (map #(str %) (:modified commit))]
