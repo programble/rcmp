@@ -33,10 +33,10 @@
                 "/"
                 (:name (:repository payload))
                 "\u0002: "
-                (->> (:ref payload) (split #"/") (last))
-                " "
                 (count (:commits payload))
-                " commits <"
+                " commits on "
+                (->> (:ref payload) (split #"/") (last))
+                " <"
                 (is-gd (:compare payload))
                 "> "
                 (:open_issues (:repository payload))
