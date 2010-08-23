@@ -1,4 +1,4 @@
 #!/bin/bash
 DIR=$(dirname $(readlink -f $0))
-java -XX:ReservedCodeCacheSize=16m -XX:MaxPermSize=16m -XX:MinHeapFreeRatio=40 -Xms2m -Xmx2m -cp lib/*:src/ clojure.main -e "(use 'rcmp.core)" &> $DIR/rcmp.log < /dev/null &
+java -XX:ReservedCodeCacheSize=16m -XX:MaxPermSize=16m -XX:MinHeapFreeRatio=40 -Xms2m -Xmx2m -cp $DIR/lib/*:$DIR/src/ clojure.main -e "(use 'rcmp.core)" &> $DIR/rcmp.log < /dev/null &
 echo "$!" > rcmp.pid
