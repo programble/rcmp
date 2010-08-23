@@ -37,7 +37,7 @@
                 (is-gd (:compare payload))
                 ">")]
           (for [commit (:commits payload)]
-            (format-commit commit)))
+            (format-commit commit false)))
     (for [commit (:commits payload)]
       (str (:name (:owner (:repository payload)))
            "/"
@@ -45,7 +45,7 @@
            ":"
            (->> (:ref payload) (split #"/") (last))
            " "
-           (format-commit commit)))))
+           (format-commit commit true)))))
          
 (defn notify [server port channel payload]
   (if-let [irc (get @irc-connections server)]
