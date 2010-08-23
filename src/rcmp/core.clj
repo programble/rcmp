@@ -13,7 +13,7 @@
          (wrap-file "public")
          wrap-file-info
          ; Should probably remove these two for production
-         (wrap-reload '[rcmp.web])
+         (wrap-reload '[rcmp.web rcmp.notify])
          wrap-stacktrace))
 
 (defonce server (run-jetty #'app {:port 8080 :join? false}))
