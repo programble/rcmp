@@ -9,7 +9,7 @@ case "$1" in
         $RCMP &
         ;;
     stop)
-        kill $(cat rcmp.pid)
+        kill $(cat $DIR/rcmp.pid)
         ;;
     restart)
         $SCRIPT stop
