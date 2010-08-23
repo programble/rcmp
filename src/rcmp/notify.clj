@@ -28,10 +28,11 @@
 
 (defn format-notification [payload]
   (if (> (count (:commits payload)) 1)
-    (into [(str (:name (:owner (:repository payload)))
+    (into [(str "\u0002"
+                (:name (:owner (:repository payload)))
                 "/"
                 (:name (:repository payload))
-                ":"
+                "\u0002: "
                 (->> (:ref payload) (split #"/") (last))
                 " "
                 (count (:commits payload))
@@ -43,10 +44,11 @@
           (for [commit (take 3 (:commits payload))]
             (format-commit commit false)))
     (for [commit (:commits payload)]
-      (str (:name (:owner (:repository payload)))
+      (str "\u0002"
+           (:name (:owner (:repository payload)))
            "/"
            (:name (:repository payload))
-           ":"
+           "\u0002: "
            (->> (:ref payload) (split #"/") (last))
            " "
            (format-commit commit true)))))
