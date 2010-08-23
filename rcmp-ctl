@@ -3,13 +3,19 @@
 DIR=$(dirname $(readlink -f $0))
 SCRIPT=$DIR/$(basename $0)
 RCMP=$DIR/rcmp
+PIDFILE=$DIR/rcmp.pid
 
 case "$1" in
     start)
-        $RCMP &
+        if [ -f $PIDFILE ]; then
+            echo "RCMP is already running"
+        else
+            $RCMP &
+        fi
         ;;
     stop)
-        kill $(cat $DIR/rcmp.pid)
+        kill $(cat $PIDFILE)
+        rm $PIDFILE
         ;;
     restart)
         $SCRIPT stop
