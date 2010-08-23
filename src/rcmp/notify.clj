@@ -30,7 +30,7 @@
                 "/"
                 (:name (:repository payload))
                 ":"
-                (->> (:ref payload) (split #"/" (last)))
+                (->> (:ref payload) (split #"/") (last))
                 " "
                 (count (:commits payload))
                 " new commits <"
