@@ -72,11 +72,11 @@
          :port #"\d+"
          :channel #".+"]
         [server port channel payload]
-        (notify server (read-string port) (str "#" channel) (json/decode-from-str payload))
+        (in-thread (notify server (read-string port) (str "#" channel) (json/decode-from-str payload)))
         "Notification sent")
   (POST ["/github/:server/:channel"
          :server #".+"
          :channel #".+"]
         [server channel payload]
-        (notify server 6667 (str "#" channel) (json/decode-from-str payload))
+        (in-thread (notify server 6667 (str "#" channel) (json/decode-from-str payload)))
         "Notification sent"))
