@@ -1,0 +1,18 @@
+#!/bin/bash
+
+case "$1" in
+    start)
+        ./rcmp &
+        ;;
+    stop)
+        kill $(cat rcmp.pid)
+        ;;
+    restart)
+        $0 stop
+        $0 start
+        ;;
+    update)
+        git pull
+        $0 restart
+        ;;
+esac
