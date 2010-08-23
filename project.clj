@@ -8,5 +8,6 @@
                  [org.danlarkin/clojure-json "1.1"]
                  [clojure-http-client "1.1.0-SNAPSHOT"]
                  [ring/ring-core "0.2.5"]
-                 [hiccup "0.2.6"]]
+                 [hiccup "0.2.6"]
+                 [ring/ring-devel "0.2.5"]]
   :dev-dependencies [[swank-clojure "1.2.1"]])

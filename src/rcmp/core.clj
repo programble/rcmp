@@ -1,10 +1,19 @@
 (ns rcmp.core
   (:use [rcmp notify web]
         [compojure.core :only [defroutes]]
-        ring.adapter.jetty))
+        ring.adapter.jetty
+        [ring.middleware reload stacktrace file file-info]))
 
 (defroutes all-routes
   #'web-routes
   #'notify-routes)
 
-(defonce server (run-jetty #'all-routes {:port 8080 :join? false}))
+(def app
+     (-> #'all-routes
+         (wrap-file "public")
+         wrap-file-info
+         ; Should probably remove these two for production
+         (wrap-reload '[rcmp.web])
+         wrap-stacktrace))
+
+(defonce server (run-jetty #'app {:port 8080 :join? false}))
