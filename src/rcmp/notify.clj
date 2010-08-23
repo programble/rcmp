@@ -25,7 +25,7 @@
        (:message commit)))
 
 (defn format-notification [payload]
-  (if (> (count (:commits payload)) 3)
+  (if (> (count (:commits payload)) 1)
     (into [(str (:name (:owner (:repository payload)))
                 "/"
                 (:name (:repository payload))
@@ -36,7 +36,7 @@
                 " new commits <"
                 (is-gd (:compare payload))
                 ">")]
-          (for [commit (:commits payload)]
+          (for [commit (take 3 (:commits payload))]
             (format-commit commit false)))
     (for [commit (:commits payload)]
       (str (:name (:owner (:repository payload)))
