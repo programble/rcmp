@@ -35,9 +35,11 @@
                 (->> (:ref payload) (split #"/") (last))
                 " "
                 (count (:commits payload))
-                " new commits <"
+                " commits <"
                 (is-gd (:compare payload))
-                ">")]
+                "> "
+                (:open_issues (:repository payload))
+                " open issues")]
           (for [commit (take 3 (:commits payload))]
             (format-commit commit false)))
     (for [commit (:commits payload)]
