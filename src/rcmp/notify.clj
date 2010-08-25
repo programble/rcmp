@@ -60,11 +60,9 @@
         (join-chan irc channel))
       (doseq [line (format-notification payload)]
         (send-message irc channel line)))
-    (let [irc (connect (create-irc {:name "RCMP" :server server :port port :fnmap {}}) :channels [channel])]
-      (swap! irc-connections assoc server irc)
-      (Thread/sleep 10000)
-      (doseq [line (format-notification payload)]
-        (send-message irc channel line)))))
+    (let [on-connect (fn [{:keys [irc]}] (doseq [line (format-notification payload)] (send-message irc channel line)))
+          irc (connect (create-irc {:name "RCMP" :server server :port port :fnmap {:on-connect on-connect}}) :channels [channel])]
+      (swap! irc-connections assoc server irc))))
 
 (defroutes notify-routes
   (POST ["/github/:server/:port/:channel"
