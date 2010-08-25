@@ -54,6 +54,7 @@
            (format-commit commit true)))))
          
 (defn notify [server port channel payload]
+  (println (format "(notify %s %d %s %s)" server port channel (str payload)))
   (if-let [irc (get @irc-connections server)]
     (do
       (when-not (in-channel? irc channel)
@@ -62,7 +63,8 @@
         (send-message irc channel line)))
     (let [on-connect (fn [{:keys [irc]}] (join-chan irc channel) (doseq [line (format-notification payload)] (send-message irc channel line)))
           irc (connect (create-irc {:name "RCMP" :server server :port port :fnmap {:on-connect on-connect}}))]
-      (swap! irc-connections assoc server irc))))
+      (swap! irc-connections assoc server irc)
+      (println (str "@irc-connections: " @irc-connections)))))
 
 (defroutes notify-routes
   (POST ["/github/:server/:port/:channel"
