@@ -2,8 +2,8 @@
   (:use [compojure.core :only [defroutes POST]]
         irclj.irclj
         rcmp.utilities
-        [clojure.contrib.string :only [split]])
-  (:require [org.danlarkin [json :as json]]))
+        [clojure.contrib.string :only [split]]
+        clojure.contrib.json))
 
 (defonce irc-connections (atom {}))
 
@@ -72,11 +72,11 @@
          :port #"\d+"
          :channel #".+"]
         [server port channel payload]
-        (in-thread (notify server (read-string port) (str "#" channel) (json/decode-from-str payload)))
+        (in-thread (notify server (read-string port) (str "#" channel) (read-json payload)))
         "Notification sent")
   (POST ["/github/:server/:channel"
          :server #".+"
          :channel #".+"]
         [server channel payload]
-        (in-thread (notify server 6667 (str "#" channel) (json/decode-from-str payload)))
+        (in-thread (notify server 6667 (str "#" channel) (read-json payload)))
         "Notification sent"))

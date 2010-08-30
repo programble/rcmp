@@ -5,7 +5,6 @@
                  [compojure "0.4.1"]
                  [ring/ring-jetty-adapter "0.2.3"]
                  [irclj "0.3.0-SNAPSHOT"]
-                 [org.danlarkin/clojure-json "1.1"]
                  [clojure-http-client "1.1.0-SNAPSHOT"]
                  [ring/ring-core "0.2.5"]
                  [hiccup "0.2.6"]
