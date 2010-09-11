@@ -12,18 +12,18 @@
 
 (defn format-commit [commit url?]
   (str (when url?
-         (str "<" (is-gd (:url commit)) "> "))
+         (str "<" (is-gd (:url commit)) "> \u0002"))
        (:name (:author commit))
-       ": "
+       "\u0002: "
        (apply str (take 8 (:id commit)))
-       " ["
+       " \u0002["
        (->> [(map #(str "+" %) (:added commit))
              (map #(str "-" %) (:removed commit))
              (map #(str %) (:modified commit))]
             (flatten)
             (interpose " ")
             (apply str))
-       "] "
+       "]\u0002 "
        (:message commit)))
 
 (defn format-notification [payload]
