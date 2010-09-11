@@ -56,6 +56,8 @@
          
 (defn notify [server port channel payload]
   (println (format "(notify %s %d %s %s)" server port channel (str payload)))
+  (when (= (:name (:repository payload) "rcmp"))
+    (println (clojure.java.shell/sh "git" "pull")))
   (if-let [irc (get @irc-connections server)]
     (if (.isClosed (:sock (:connection @irc)))
       (do
