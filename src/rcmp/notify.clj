@@ -3,7 +3,8 @@
         irclj.irclj
         rcmp.utilities
         [clojure.contrib.string :only [split]]
-        clojure.contrib.json))
+        clojure.contrib.json)
+  (:require clojure.java.shell))
 
 (defonce irc-connections (atom {}))
 
