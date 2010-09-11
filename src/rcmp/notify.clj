@@ -12,7 +12,8 @@
 
 (defn format-commit [commit url?]
   (str (when url?
-         (str "<" (is-gd (:url commit)) "> \u0002"))
+         (str "<" (is-gd (:url commit)) "> "))
+       "\u0002"
        (:name (:author commit))
        "\u0002: "
        (apply str (take 8 (:id commit)))
