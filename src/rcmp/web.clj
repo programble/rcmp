@@ -8,7 +8,11 @@
           [:title "RCMP"]]
          [:body
           [:h1 "RCMP"]
-          [:p "RCMP is a Github commit notification IRC bot."]]))
+          [:p "RCMP is a Github commit notification IRC bot."]
+          [:h2 "Connected to"]
+          [:ul
+           (for [server (keys @irc-connections)]
+             [:li server])]]))
 
 (defroutes web-routes
   (GET "/" [] (home)))
