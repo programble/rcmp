@@ -17,7 +17,7 @@
        "\u0002"
        (:name (:author commit))
        "\u0002: "
-       (apply str (take 8 (:id commit)))
+       (apply str (take 7 (:id commit)))
        " \u0002[\u0002"
        (->> [(map #(str "+" %) (:added commit))
              (map #(str "-" %) (:removed commit))
