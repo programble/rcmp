@@ -4,7 +4,7 @@
                  [org.clojure/clojure-contrib "1.2.0"]
                  [compojure "0.4.1"]
                  [ring/ring-jetty-adapter "0.2.3"]
-                 [irclj "0.3.0-SNAPSHOT"]
+                 [irclj "0.4.0-SNAPSHOT"]
                  [clojure-http-client "1.1.0-SNAPSHOT"]
                  [ring/ring-core "0.2.5"]
                  [hiccup "0.2.6"]
