@@ -1,6 +1,6 @@
 (ns rcmp.notify
   (:use [compojure.core :only [defroutes POST]]
-        irclj.irclj
+        irclj.core
         rcmp.utilities
         [clojure.contrib.string :only [split]]
         clojure.contrib.json)
