@@ -1,3 +1,0 @@
-#!/bin/bash
-
-java -XX:ReservedCodeCacheSize=16m -XX:MaxPermSize=16m -XX:MinHeapFreeRatio=40 -Xms10m -Xmx10m -cp lib/*:src/ clojure.main
