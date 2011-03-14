@@ -10,7 +10,7 @@
           [:h1 "RCMP"]
           [:p "RCMP is a Github commit notification IRC bot."]
           [:h2 "Commit Hook URL"]
-          [:p "http://rcmp.programble.co.cc/github/<server>/<channel>"]
+          [:p "http://rcmp.programble.co.cc/github/&lt;server&gt;/&lt;channel&gt;"]
           [:h2 "Connected to"]
           [:ul
            (for [server (keys @irc-connections)]
