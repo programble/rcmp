@@ -69,3 +69,7 @@ post "/github/:server/:channel" do
   notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
   "Success"
 end
+
+get "/" do
+  "Pong"
+end
