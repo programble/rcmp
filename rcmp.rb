@@ -49,7 +49,8 @@ def notify(server, port, channel, payload)
       
       on :join do |m|
         if m.user.nick == bot.nick && m.channel.name == channel
-          m.channel.msg(format_payload(payload))
+          m.channel.msg(format_payload(payload)) unless sent
+          sent = true
         end
       end
     end
