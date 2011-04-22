@@ -38,6 +38,7 @@ def notify(server, port, channel, payload)
     $servers[server].join(channel)
     $servers[server].msg(channel, format_payload(payload))
   else
+    sent = false
     $servers[server] = Cinch::Bot.new do
       configure do |c|
         c.nick = "RCMP"
