@@ -16,10 +16,7 @@ end
 def format_commit(commit, url)
   short_url = url ? "<#{isgd(commit['url'])}> " : nil
   files = commit['added'].map {|x| "+" + x} + commit['removed'].map {|x| "-" + x} + commit['modified']
-  if files.length > 7
-    files = files[0..6]
-    files << "(#{files.length - 7} more)"
-  end
+  files = files[0..6] + ["(#{files.length - 7} more)"] if files.length > 7
   "#{short_url}\x02#{commit['author']['name']}\x02: #{commit['id'][0..7]}\x02 [\x02#{files.join(' ')}\x02]\x02 #{commit['message']}"
 end
 
