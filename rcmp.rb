@@ -63,11 +63,23 @@ configure do
   set :port, (ARGV[0] ? ARGV[0].to_i : 8080)
 end
 
-post "/github/:server/:port/:channel" do
-  notify(params[:server], params[:port].to_i, params[:channel], params[:payload])
+post "/:server/:port/:channel" do
+  notify(params[:server], params[:port].to_i, "##{params[:channel]}", params[:payload])
   "Success"
 end
 
+post "/:server/:channel" do
+  notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
+  "Success"
+end
+
+# Deprecated
+post "/github/:server/:port/:channel" do
+  notify(params[:server], params[:port].to_i, "##{params[:channel]}", params[:payload])
+  "Success"
+end
+
+# Deprecated
 post "/github/:server/:channel" do
   notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
   "Success"
