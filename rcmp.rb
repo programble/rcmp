@@ -66,13 +66,13 @@ end
 # Deprecated
 post "/github/:server/:port/:channel" do
   notify(params[:server], params[:port].to_i, "##{params[:channel]}", params[:payload])
-  "Success"
+  "Stop using this :("
 end
 
 # Deprecated
 post "/github/:server/:channel" do
   notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
-  "Success"
+  "Stop using this :("
 end
 
 post "/:server/:port/:channel" do
@@ -83,6 +83,10 @@ end
 post "/:server/:channel" do
   notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
   "Success"
+end
+
+get "/:server/*" do
+  "Connection: #{$servers[params[:server]] ? 'Active' : 'Not connected'}"
 end
 
 get "/" do
