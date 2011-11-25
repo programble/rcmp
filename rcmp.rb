@@ -90,5 +90,5 @@ get "/:server/*" do
 end
 
 get "/" do
-  "Pong"
+  "Active connections: #{$servers.length}"
 end
