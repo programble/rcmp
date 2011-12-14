@@ -3,6 +3,7 @@
 require 'rubygems'
 require 'sinatra'
 require 'cinch'
+require 'cinch/plugins/basic_ctcp'
 require 'open-uri'
 require 'json'
 
@@ -46,6 +47,9 @@ def notify(server, port, channel, payload)
         c.server = server
         c.port = port
         c.channels = [channel]
+        
+        c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
+        c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]
       end
       
       on :join do |m|
