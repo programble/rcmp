@@ -25,7 +25,7 @@ def format_payload(payload)
   payload = JSON.parse(payload)
   if payload['commits'].length > 1
     if payload['commits'].length > 3
-      commits = payload['commits'][0..1].map {|x| format_commit(x, false)} + "And #{payload['commits'].length - 2} other commits..."
+      commits = payload['commits'][0..1].map {|x| format_commit(x, false)} + ["And #{payload['commits'].length - 2} other commits..."]
     else
       commits = payload['commits'][0..2].map {|x| format_commit(x, false)}
     end
