@@ -1,11 +1,18 @@
 #!/usr/bin/env ruby
 
-require 'rubygems'
-require 'sinatra'
 require 'cinch'
 require 'cinch/plugins/basic_ctcp'
-require 'open-uri'
+require 'configru'
 require 'json'
+require 'open-uri'
+require 'sinatra'
+
+Configru.load do
+  just 'rcmp.yml'
+  options do
+    server_blacklist Array, []
+  end
+end
 
 $servers = {}
 
@@ -36,6 +43,8 @@ def format_payload(payload)
 end
 
 def notify(server, port, channel, payload)
+  return if Configru.server_blacklist.include?(server)
+
   if $servers.include?(server)
     $servers[server].join(channel)
     $servers[server].msg(channel, format_payload(payload))
@@ -47,11 +56,11 @@ def notify(server, port, channel, payload)
         c.server = server
         c.port = port
         c.channels = [channel]
-        
+
         c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
         c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]
       end
-      
+
       on :join do |m|
         if m.user.nick == bot.nick && m.channel.name == channel
           m.channel.msg(format_payload(payload)) unless sent
