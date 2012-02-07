@@ -25,7 +25,7 @@ def format_commit(commit, url)
   short_url = url ? "<#{isgd(commit['url'])}> " : nil
   files = commit['added'].map {|x| "+" + x} + commit['removed'].map {|x| "-" + x} + commit['modified']
   files = files[0..4] + ["(#{files.length - 5} more)"] if files.length > 5
-  "#{short_url}\x02#{commit['author']['name']}\x02: #{commit['id'][0..7]}\x02 [\x02#{files.join(' ')}\x02]\x02 #{commit['message'].lines.first}"
+  "#{commit['id'][0..7]} #{short_url}#{short_url ? ' ' : ''}\x02#{commit['author']['name']}\x02: \x02[\x02#{files.join(' ')}\x02]\x02 #{commit['message'].lines.first}"
 end
 
 def format_payload(payload)
@@ -36,9 +36,9 @@ def format_payload(payload)
     else
       commits = payload['commits'][0..2].map {|x| format_commit(x, false)}
     end
-    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['commits'].length} commits on #{payload['ref'].split('/').last} <#{isgd(payload['compare'])}> #{payload['repository']['open_issues']} open issues\n#{commits.join("\n")}"
+    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['ref'].split('/').last} -> #{payload['commits'].first['id'][0..7]}..#{payload['commits'].last['id'][0..7]} <#{isgd(payload['compare'])}> #{payload['repository']['open_issues']} open issues\n#{commits.join("\n")}"
   else
-    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['ref'].split('/').last} #{format_commit(payload['commits'][0], true)}"
+    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['ref'].split('/').last} -> #{format_commit(payload['commits'][0], true)}"
   end
 end
 
