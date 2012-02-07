@@ -25,7 +25,7 @@ def format_commit(commit, url)
   short_url = url ? "<#{isgd(commit['url'])}> " : nil
   files = commit['added'].map {|x| "+" + x} + commit['removed'].map {|x| "-" + x} + commit['modified']
   files = files[0..4] + ["(#{files.length - 5} more)"] if files.length > 5
-  "#{commit['id'][0..7]} #{short_url}#{short_url ? ' ' : nil}\x02#{commit['author']['name']} [\x02#{files.join(' ')}\x02]\x02 #{commit['message'].lines.first}"
+  [commit['id'][0..7], ' ', short_url, (' ' if url), "\x02", commit['author']['name'], " [\x02", files.join(' '), "\x02]\x02 ", commit['message'].lines.first].join
 end
 
 def format_payload(payload)
