@@ -115,7 +115,7 @@ def format_payload(payload)
     s << "<#{isgd(payload['compare'])}>\n"
   end
   commits[0..2].each do |commit|
-    s << format_commit(commit, commits.length > 1)
+    s << format_commit(commit, commits.length == 1)
     s << "\n"
   end
   s
