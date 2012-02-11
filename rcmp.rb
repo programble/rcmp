@@ -12,6 +12,11 @@ Configru.load do
   options do
     irc do
       nick String, 'RCMP'
+      default do
+        server String, nil
+        port Fixnum, 6667
+        channel String, nil
+      end
       server_blacklist Array, []
     end
     port Fixnum, 8080
@@ -79,6 +84,16 @@ end
 
 post '/:server/:channel' do |server, channel|
   send_payload(server, 6667, "##{channel}", params[:payload])
+  'Success'
+end
+
+post '/:channel' do |channel|
+  send_payload(Configru.irc.default.server, Configru.irc.default.port, "##{channel}", params[:payload])
+  'Success'
+end
+
+post '/' do
+  send_payload(Configru.irc.default.server, Configru.irc.default.port, Configru.irc.default.channel, params[:payload])
   'Success'
 end
 
