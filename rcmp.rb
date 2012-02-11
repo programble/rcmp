@@ -127,7 +127,7 @@ def format_commit(commit, url)
   s = ''
   s << commit['id'][0..7] << ' '
   s << "<#{isgd(commit['url'])}> " if url
-  s << commit['author']['name'] << ' '
+  s << IRC_BOLD << commit['author']['name'] << IRC_BOLD << ' '
   s << IRC_BOLD << '[' << IRC_BOLD
   files = commit['added'].map {|f| "+#{f}"} + commit['removed'].map {|f| "-#{f}"} + commit['modified']
   s << files[0..4].join(' ')
