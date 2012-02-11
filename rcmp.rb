@@ -112,9 +112,7 @@ def format_payload(payload)
   s << ': ' << payload['ref'].split('/').last << ' '
   if commits.length > 1
     s << "(#{commits.length}) "
-    s << "<#{isgd(payload['compare'])}> "
-    s << "(Showing 3/#{commits.length})" if commits.length > 3
-    s << "\n"
+    s << "<#{isgd(payload['compare'])}>\n"
   end
   commits[0..2].each do |commit|
     s << format_commit(commit, commits.length > 1)
@@ -134,5 +132,4 @@ def format_commit(commit, url)
   s << ' ...' if files.length > 5
   s << IRC_BOLD << ']' << IRC_BOLD << ' '
   s << commit['message'].lines.first
-  s
 end
