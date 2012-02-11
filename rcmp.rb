@@ -10,98 +10,139 @@ require 'sinatra'
 Configru.load do
   just 'rcmp.yml'
   options do
-    server_blacklist Array, []
-  end
-end
-
-$servers = {}
-
-def isgd(url)
-  url = URI.encode(url)
-  open("http://is.gd/api.php?longurl=#{url}", 'r') { |file| file.read }
-end
-
-def format_commit(commit, url)
-  short_url = url ? "<#{isgd(commit['url'])}> " : nil
-  files = commit['added'].map {|x| "+" + x} + commit['removed'].map {|x| "-" + x} + commit['modified']
-  files = files[0..4] + ["(#{files.length - 5} more)"] if files.length > 5
-  [commit['id'][0..7], ' ', short_url, (' ' if url), "\x02", commit['author']['name'], " [\x02", files.join(' '), "\x02]\x02 ", commit['message'].lines.first].join
-end
-
-def format_payload(payload)
-  payload = JSON.parse(payload)
-  if payload['commits'].length > 1
-    if payload['commits'].length > 3
-      commits = payload['commits'][0..1].map {|x| format_commit(x, false)} + ["And #{payload['commits'].length - 2} other commits..."]
-    else
-      commits = payload['commits'][0..2].map {|x| format_commit(x, false)}
+    irc do
+      nick String, 'RCMP'
+      server_blacklist Array, []
+      default_server String, ''
+      default_port Fixnum, 6667
+      default_channel String, ''
     end
-    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['ref'].split('/').last} #{payload['commits'].first['id'][0..7]}..#{payload['commits'].last['id'][0..7]} <#{isgd(payload['compare'])}> #{payload['repository']['open_issues']} open issues\n#{commits.join("\n")}"
-  else
-    "\x02#{payload['repository']['owner']['name']}/#{payload['repository']['name']}\x02: #{payload['ref'].split('/').last} #{format_commit(payload['commits'][0], true)}"
+    port Fixnum, 8080
   end
 end
 
-def notify(server, port, channel, payload)
-  return if Configru.server_blacklist.include?(server)
+# Stuff to keep track of IRC connections
+class Connection
+  @@list = {}
 
-  if $servers.include?(server)
-    $servers[server].join(channel)
-    $servers[server].msg(channel, format_payload(payload))
-  else
-    sent = false
-    $servers[server] = Cinch::Bot.new do
+  def self.get(server, port, &block)
+    if @@list.include? [server, port]
+      block.call(@@list[[server, port]].bot)
+    else
+      self.new(server, port, &block)
+    end
+  end
+
+  attr_reader :bot
+
+  def initialize(server, port, &block)
+    @bot = Cinch::Bot.new do
       configure do |c|
         c.nick = "RCMP"
         c.server = server
         c.port = port
-        c.channels = [channel]
 
         c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
         c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]
+
+        @block_ran = false
       end
 
-      on :join do |m|
-        if m.user.nick == bot.nick && m.channel.name == channel
-          m.channel.msg(format_payload(payload)) unless sent
-          sent = true
-        end
+      on :connect do
+        block.call(bot) unless @block_ran
       end
     end
-    Thread.new { $servers[server].start }
+
+    Thread.new {@bot.start}
+    @@list[[server, port]] = self
   end
 end
 
+# Web server (Sinatra) stuff
 configure do
-  set :port, (ARGV[0] ? ARGV[0].to_i : 8080)
+  set :port, Configru.port
 end
 
 # Deprecated
-post "/github/:server/:port/:channel" do
-  notify(params[:server], params[:port].to_i, "##{params[:channel]}", params[:payload])
-  "Stop using this :("
+post '/github/:server/:port/:channel' do |server, port, channel|
+  send_payload(server, port.to_i, "##{channel}", params[:payload])
+  'Deprecated'
 end
 
 # Deprecated
-post "/github/:server/:channel" do
-  notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
-  "Stop using this :("
+post '/github/:server/:channel' do |server, channel|
+  send_payload(server, 6667, "##{channel}", params[:payload])
+  'Deprecated'
 end
 
-post "/:server/:port/:channel" do
-  notify(params[:server], params[:port].to_i, "##{params[:channel]}", params[:payload])
-  "Success"
+post '/:server/:port/:channel' do |server, port, channel|
+  send_payload(server, port.to_i, "##{channel}", params[:payload])
+  'Success'
 end
 
-post "/:server/:channel" do
-  notify(params[:server], 6667, "##{params[:channel]}", params[:payload])
-  "Success"
+post '/:server/:channel' do |server, channel|
+  send_payload(server, 6667, "##{channel}", params[:payload])
+  'Success'
 end
 
-get "/:server/*" do
-  "Connection: #{$servers[params[:server]] ? 'Active' : 'Not connected'}"
+post '/:channel' do |channel|
+  send_payload(Configru.irc.default_server, Configru.irc.default_port, "##{channel}", params[:payload])
+  'Success'
 end
 
-get "/" do
-  "Active connections: #{$servers.length}"
+post '/' do
+  send_payload(Configru.irc.default_server, Configru.irc.default_port, Configru.irc.default_channel, params[:payload])
+  'Success'
+end
+
+get '/' do
+  'Pong'
+end
+
+# The real guts
+def send_payload(server, port, channel, payload)
+  return if Configru.irc.server_blacklist.include?(server)
+
+  Connection.get(server, port) do |bot|
+    bot.join(channel)
+    bot.msg(channel, format_payload(JSON.parse(payload)))
+  end
+end
+
+def isgd(url)
+  # TODO: Timeout?
+  open("http://is.gd/api.php?longurl=#{URI.encode(url)}", 'r', &:read)
+end
+
+IRC_BOLD = "\x02"
+
+def format_payload(payload)
+  s = ''
+  commits = payload['commits']
+
+  s << IRC_BOLD << payload['repository']['owner']['name']
+  s << '/' << payload['repository']['name'] << IRC_BOLD
+  s << ': ' << payload['ref'].split('/').last << ' '
+  if commits.length > 1
+    s << "(#{commits.length}) "
+    s << "<#{isgd(payload['compare'])}>\n"
+  end
+  commits[0..2].each do |commit|
+    s << format_commit(commit, commits.length == 1)
+    s << "\n"
+  end
+  s
+end
+
+def format_commit(commit, url)
+  s = ''
+  s << commit['id'][0..7] << ' '
+  s << "<#{isgd(commit['url'])}> " if url
+  s << IRC_BOLD << commit['author']['name'] << IRC_BOLD << ' '
+  s << IRC_BOLD << '[' << IRC_BOLD
+  files = commit['added'].map {|f| "+#{f}"} + commit['removed'].map {|f| "-#{f}"} + commit['modified']
+  s << files[0..4].join(' ')
+  s << ' ...' if files.length > 5
+  s << IRC_BOLD << ']' << IRC_BOLD << ' '
+  s << commit['message'].lines.first
 end
