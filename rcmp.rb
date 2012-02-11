@@ -13,9 +13,9 @@ Configru.load do
     irc do
       nick String, 'RCMP'
       default do
-        server String, nil
+        server String, ''
         port Fixnum, 6667
-        channel String, nil
+        channel String, ''
       end
       server_blacklist Array, []
     end
