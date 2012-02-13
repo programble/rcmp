@@ -109,9 +109,8 @@ def send_payload(server, port, channel, payload)
   end
 end
 
-def isgd(url)
-  # TODO: Timeout?
-  open("http://is.gd/api.php?longurl=#{URI.encode(url)}", 'r', &:read)
+def dagd(url)
+  open("http://da.gd/s?url=#{URI.encode(url)}&strip=1", 'r', &:read)
 end
 
 IRC_BOLD = "\x02"
@@ -125,7 +124,7 @@ def format_payload(payload)
   s << ': ' << payload['ref'].split('/').last << ' '
   if commits.length > 1
     s << "(#{commits.length}) "
-    s << "<#{isgd(payload['compare'])}>\n"
+    s << "<#{dagd(payload['compare'])}>\n"
   end
   commits[0..2].each do |commit|
     s << format_commit(commit, commits.length == 1)
@@ -137,7 +136,7 @@ end
 def format_commit(commit, url)
   s = ''
   s << commit['id'][0..7] << ' '
-  s << "<#{isgd(commit['url'])}> " if url
+  s << "<#{dagd(commit['url'])}> " if url
   s << IRC_BOLD << commit['author']['name'] << IRC_BOLD << ' '
   s << IRC_BOLD << '[' << IRC_BOLD
   files = commit['added'].map {|f| "+#{f}"} + commit['removed'].map {|f| "-#{f}"} + commit['modified']

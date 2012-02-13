@@ -1,0 +1,5 @@
+options:
+  irc:
+    nick: 'RCMP_cb'
+    default_server: irc.tenthbit.net
+    default_channel: "#programming"
