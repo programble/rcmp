@@ -50,6 +50,7 @@ class Connection
 
       on :connect do
         block.call(bot) unless @block_ran
+        @block_ran = true
       end
     end
 
