@@ -106,7 +106,7 @@ def send_payload(server, port, channel, payload)
 
   Connection.get(server, port) do |bot|
     bot.join(channel)
-    bot.msg(channel, format_payload(JSON.parse(payload)))
+    bot.Channel(channel).msg(format_payload(JSON.parse(payload)))
   end
 end
 
