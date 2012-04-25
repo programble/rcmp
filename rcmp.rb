@@ -105,8 +105,10 @@ def send_payload(server, port, channel, payload)
   return if Configru.irc.server_blacklist.include?(server)
 
   Connection.get(server, port) do |bot|
-    bot.join(channel)
-    bot.Channel(channel).msg(format_payload(JSON.parse(payload)))
+    if formatted = format_payload(JSON.parse(payload))
+      bot.join(channel)
+      bot.Channel(channel).msg(formatted)
+    end
   end
 end
 
@@ -127,14 +129,20 @@ def format_payload(payload)
     s << "(#{commits.length}) "
     s << "<#{dagd(payload['compare'])}>\n"
   end
+
+  has_commit = false
   commits[0..2].each do |commit|
-    s << format_commit(commit, commits.length == 1)
-    s << "\n"
+    formatted_commit = format_commit(commit, commits.length == 1)
+    if formatted_commit
+      s << "#{formatted_commit}\n"
+      has_commit = true
+    end
   end
-  s
+  s if has_commit
 end
 
 def format_commit(commit, url)
+  return false if commit['message'].include? '[irc skip]'
   s = ''
   s << commit['id'][0..7] << ' '
   s << "<#{dagd(commit['url'])}> " if url
