@@ -6,8 +6,8 @@ A Github commit hook IRC bot written in Ruby with Sinatra and Cinch.
 
 # Using
 
-To use, set up and run RCMP (by default it listens on port 8080, so have that
-forwarded, or change it by creating an `rcmp.yml` config, with the following:
+To use, set up and run RCMP (by default it listens on port 8080 but can be
+changed by creating an `rcmp.yml` config, with the following:
 
 ```yaml
 options:
@@ -17,7 +17,7 @@ options:
 ...changing 8081 to the port of your choice. Remember that on *nix, to bind
 to a port below 1024, you must run the bot as root (not recommended).
 
-Also remember to open up that port on your firewall.
+Also remember to open up the port you choose, in your firewall settings.
 
 Once you have the bot running, select a repository on Github on which you have
 admin capabilities. Click the admin button, go to 'Service Hooks', and click
