@@ -119,6 +119,18 @@ end
 IRC_BOLD = "\x02"
 
 def format_payload(payload)
+  if payload['commit']
+    format_travis_payload(payload)
+  elsif payload['commits']
+    format_github_payload(payload)
+  else
+    warn "Received unknown payload."
+  end
+end
+
+# Github stuff
+
+def format_github_payload(payload)
   s = ''
   commits = payload['commits']
 
@@ -154,3 +166,55 @@ def format_commit(commit, url)
   s << IRC_BOLD << ']' << IRC_BOLD << ' '
   s << commit['message'].lines.first
 end
+
+# Travis stuff
+
+def format_travis_payload(payload)
+  s = ''
+  commit = payload['commit']
+  owner = payload['repository']['owner_name']
+  repository = payload['repository']['name']
+  build_id = payload['id']
+  build_url = "http://travis-ci.org/#{owner}/#{repository}/builds/#{build_id}"
+  last_build = travis_last_build(payload['repository']['id'], payload['number'])
+  build_passed = payload['status'].zero?
+  last_build_passed = last_build['status'].zero?
+  
+  build_status = if !build_passed && last_build_passed
+    'failed'
+  elsif build_passed && !last_build_passed
+    'was fixed'
+  elsif !build_passed && !last_build_passed
+    'is still failing'
+  else # build_passed && last_build_passed
+    'passed'
+  end
+  
+  s << IRC_BOLD << owner << '/' << repository << IRC_BOLD
+  s << ': ' << payload['branch'] << ' '
+  s << payload['commit'][0..7] << ' '
+  s << 'Build #' << payload['number'] << ' ' << build_status << '. '
+  s << dagd(build_url)
+  s
+end
+
+def travis_last_build(repository_id, curr_build_number)
+  last_build_number = (curr_build_number.to_i - 1).to_s
+  
+  build_list = travis_build_list(repository_id)
+  
+  last_build = build_list.find do |build|
+    build['number'] == last_build_number
+  end
+  
+  travis_build_info(last_build['id'])
+end
+
+def travis_build_list(repository_id)
+  JSON.parse(open("http://travis-ci.org/repositories/#{repository_id}/builds.json?bare=true").read)
+end
+
+def travis_build_info(build_id)
+  JSON.parse(open("http://travis-ci.org/builds/#{build_id}.json?bare=true").read)
+end
+
