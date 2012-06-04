@@ -211,7 +211,7 @@ def travis_last_build(repository_id, curr_build_number)
 end
 
 def travis_build_list(repository_id)
-  JSON.parse(open("http://travis-ci.org/repositories/#{repository_id}/builds.json?bare=true").read)
+  JSON.parse(open("http://travis-ci.org/builds.json?repository_id=#{repository_id}&bare=true").read)
 end
 
 def travis_build_info(build_id)
