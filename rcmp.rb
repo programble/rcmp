@@ -9,18 +9,15 @@ require 'json'
 require 'open-uri'
 require 'sinatra'
 
-Configru.load do
-  just 'rcmp.yml'
-  options do
-    irc do
-      nick String, 'RCMP'
-      server_blacklist Array, []
-      default_server String, ''
-      default_port Fixnum, 6667
-      default_channel String, ''
-    end
-    port Fixnum, 8080
+Configru.load('rcmp.yml') do
+  option_group :irc do
+    option :nick, String, 'RCMP'
+    option :server_blacklist, Array, []
+    option :default_server, String
+    option :default_port, Fixnum, 6667
+    option :default_channel, String
   end
+  option :port, Fixnum, 8080
 end
 
 # Stuff to keep track of IRC connections
