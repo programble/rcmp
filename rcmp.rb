@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'bundler/setup'
+
 require 'cinch'
 require 'cinch/plugins/basic_ctcp'
 require 'configru'
