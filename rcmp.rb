@@ -12,7 +12,7 @@ require 'sinatra'
 Configru.load('rcmp.yml') do
   option_group :irc do
     option :nick, String, 'RCMP'
-    option :server_blacklist, Array, []
+    option_array :server_blacklist, String
     option :default_server, String
     option :default_port, Fixnum, 6667
     option :default_channel, String
