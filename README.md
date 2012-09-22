@@ -1,7 +1,5 @@
 # RCMP
 
-![](http://stillmaintained.com/programble/rcmp.png)
-
 A Github commit hook IRC bot written in Ruby with Sinatra and Cinch.
 
 ## License
