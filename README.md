@@ -1,10 +1,65 @@
 # RCMP
 
-A Github commit hook IRC bot written in Ruby with Sinatra and Cinch.
+RCMP is a low-maintenance Github commit notification IRC bot with Travis CI integration.
+
+## Usage
+
+RCMP accepts Github webhook payloads POSTed to:
+
+#### `/`
+
+Notification is sent to default destination.
+
+#### `/:server/:channel`
+
+Example: `/example.org/example`
+
+Notification is sent to `:server` on port 6667 in `:channel`.
+
+#### `/:server/:port/:channel`
+
+Example: `/example.org/6667/example`
+
+Notification is sent to `:server` on `:port` in `:channel`.
+
+### Example
+
+```
+<RCMP> programble/rcmp: master cbde68d1 <http://da.gd/AHm70> Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
+```
+
+```
+<RCMP> programble/rcmp: master (3) <http://da.gd/AHm70>
+<RCMP> d1ec92fd Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
+<RCMP> 72d05d24 Curtis McEnroe [README.md] Remove stillmaintained badge
+<RCMP> cbde68d1 Curtis McEnroe [Gemfile Gemfile.lock rcmp.rb] Update to Configru 3.0.0
+```
+
+## Configuration
+
+Configuration is stored in `rcmp.yml`.
+
+```yaml
+# HTTP port to listen for payloads on
+port: 8080
+
+irc:
+  # IRC nick
+  nick: RCMP
+  
+  # List of servers RCMP will not connect to
+  server_blacklist:
+    - example.org
+  
+  # Default notification destination for POSTs to /
+  default_server: example.org
+  default_port: 6667
+  default_channel: '#example'
+```
 
 ## License
 
-Copyright (c) 2011, Curtis McEnroe <programble@gmail.com>
+Copyright (c) 2011-2012, Curtis McEnroe <programble@gmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
