@@ -13,9 +13,9 @@ Configru.load('rcmp.yml') do
   option_group :irc do
     option :nick, String, 'RCMP'
     option_array :server_blacklist, String
-    option :default_server, String
+    option_required :default_server, String
     option :default_port, Fixnum, 6667
-    option :default_channel, String
+    option_required :default_channel, String
   end
   option :port, Fixnum, 8080
 end
