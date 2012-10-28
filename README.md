@@ -46,11 +46,9 @@ port: 8080
 irc:
   # IRC nick
   nick: RCMP
-  
   # List of servers RCMP will not connect to
   server_blacklist:
     - example.org
-  
   # Default notification destination for POSTs to /
   default_server: example.org
   default_port: 6667
