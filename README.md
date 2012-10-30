@@ -44,15 +44,22 @@ Configuration is stored in `rcmp.yml`.
 port: 8080
 
 irc:
-  # IRC nick
-  nick: RCMP
-  # List of servers RCMP will not connect to
-  server_blacklist:
-    - example.org
-  # Default notification destination for POSTs to /
-  default_server: example.org
-  default_port: 6667
-  default_channel: '#example'
+  # Default nick
+  default_nick: RCMP
+  # Server-specific nicks
+  nicks:
+    irc.example.org: potato
+  # NickServ passwords
+  nickserv:
+    irc.example.org: password
+  # Default notification destination (for POSTs to /)
+  default_dest:
+    server: irc.example.org
+    port: 6667
+    channel: '#example'
+  # List of servers to not connect to
+  blacklist:
+    - irc.example.org
 ```
 
 ## License
