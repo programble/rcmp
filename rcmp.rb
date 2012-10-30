@@ -80,18 +80,6 @@ configure do
   set :port, Configru.port
 end
 
-# Deprecated
-post '/github/:server/:port/:channel' do |server, port, channel|
-  send_payload(server, port.to_i, "##{channel}", params[:payload])
-  'Deprecated'
-end
-
-# Deprecated
-post '/github/:server/:channel' do |server, channel|
-  send_payload(server, 6667, "##{channel}", params[:payload])
-  'Deprecated'
-end
-
 post '/:server/:port/:channel' do |server, port, channel|
   send_payload(server, port.to_i, "##{channel}", params[:payload])
   'Success'
