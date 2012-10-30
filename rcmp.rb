@@ -4,20 +4,28 @@ require 'bundler/setup'
 
 require 'cinch'
 require 'cinch/plugins/basic_ctcp'
+require 'cinch/plugins/identify'
 require 'configru'
 require 'json'
 require 'open-uri'
 require 'sinatra'
 
 Configru.load('rcmp.yml') do
-  option_group :irc do
-    option :nick, String, 'RCMP'
-    option_array :server_blacklist, String
-    option_required :default_server, String
-    option :default_port, Fixnum, 6667
-    option_required :default_channel, String
-  end
   option :port, Fixnum, 8080
+
+  option_group :irc do
+    option :default_nick, String, 'RCMP'
+    option_group :default_dest do
+      option_required :server, String
+      option :port, Fixnum, 6667
+      option_required :channel, String
+    end
+
+    option_array :blacklist, String
+
+    option :nicks, Hash, {}
+    option :nickserv, Hash, {}
+  end
 end
 
 # Stuff to keep track of IRC connections
@@ -37,12 +45,21 @@ class Connection
   def initialize(server, port, &block)
     @bot = Cinch::Bot.new do
       configure do |c|
-        c.nick = "RCMP"
+        c.nick = Configru.irc.nicks[server] || Configru.irc.default_nick
         c.server = server
         c.port = port
 
         c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
         c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]
+
+        if Configru.irc.nickserv[server]
+          c.plugins.plugins << Cinch::Plugins::Identify
+          c.plugins.options[Cinch::Plugins::Identify] = {
+            :type => :nickserv,
+            :username => c.nick,
+            :password => Configru.irc.nickserv[server]
+          }
+        end
 
         @block_ran = false
       end
@@ -86,12 +103,12 @@ post '/:server/:channel' do |server, channel|
 end
 
 post '/:channel' do |channel|
-  send_payload(Configru.irc.default_server, Configru.irc.default_port, "##{channel}", params[:payload])
+  send_payload(Configru.irc.default_dest.server, Configru.irc.default_dest.port, "##{channel}", params[:payload])
   'Success'
 end
 
 post '/' do
-  send_payload(Configru.irc.default_server, Configru.irc.default_port, Configru.irc.default_channel, params[:payload])
+  send_payload(Configru.irc.default_dest.server, Configru.irc.default_dest.port, Configru.irc.default_dest.channel, params[:payload])
   'Success'
 end
 
@@ -101,7 +118,7 @@ end
 
 # The real guts
 def send_payload(server, port, channel, payload)
-  return if Configru.irc.server_blacklist.include?(server)
+  return if Configru.irc.blacklist.include?(server)
 
   Connection.get(server, port) do |bot|
     if formatted = format_payload(JSON.parse(payload))
@@ -216,4 +233,3 @@ end
 def travis_build_info(build_id)
   JSON.parse(open("http://travis-ci.org/builds/#{build_id}.json?bare=true").read)
 end
-
