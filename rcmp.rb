@@ -22,6 +22,7 @@ Configru.load('rcmp.yml') do
     end
 
     option_array :blacklist, String
+    option_array :whitelist, String
 
     option :nicks, Hash, {}
     option :nickserv, Hash, {}
@@ -106,7 +107,11 @@ end
 
 # The real guts
 def send_payload(server, port, channel, payload)
-  return if Configru.irc.blacklist.include?(server)
+  if Configru.irc.whitelist.any?
+    return unless Configru.irc.whitelist.include?(server)
+  else
+    return if Configru.irc.blacklist.include?(server)
+  end
 
   Connection.get(server, port) do |bot|
     if formatted = format_payload(JSON.parse(payload))
