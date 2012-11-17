@@ -122,7 +122,11 @@ def send_payload(server, port, channel, payload)
 end
 
 def dagd(url)
-  open("http://da.gd/s?url=#{URI.encode(url)}&strip=1", 'r', &:read)
+  begin
+    open("http://da.gd/s?url=#{URI.encode(url)}&strip=1", 'r', &:read)
+  rescue OpenURI::HTTPError => e
+    e.to_s
+  end
 end
 
 IRC_BOLD = "\x02"
