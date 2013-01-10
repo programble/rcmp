@@ -4,7 +4,7 @@ RCMP is a low-maintenance Github commit notification IRC bot with Travis CI inte
 
 ## Usage
 
-RCMP accepts Github webhook payloads POSTed to:
+RCMP accepts Github and Travis webhook payloads POSTed to:
 
 #### `/`
 
@@ -22,7 +22,7 @@ Example: `/example.org/6667/example`
 
 Notification is sent to `:server` on `:port` in `:channel`.
 
-### Example
+### Example Output
 
 ```
 <RCMP> programble/rcmp: master cbde68d1 <http://da.gd/AHm70> Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
@@ -33,6 +33,17 @@ Notification is sent to `:server` on `:port` in `:channel`.
 <RCMP> d1ec92fd Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
 <RCMP> 72d05d24 Curtis McEnroe [README.md] Remove stillmaintained badge
 <RCMP> cbde68d1 Curtis McEnroe [Gemfile Gemfile.lock rcmp.rb] Update to Configru 3.0.0
+```
+
+### Travis Integration
+
+To have RCMP announce Travis build results for a project, add the
+following to your `.travis.yml`.
+
+```yaml
+notifications:
+  webhooks:
+    - http://your.rcmp.instance/:server/:channel
 ```
 
 ## Configuration
