@@ -68,6 +68,9 @@ irc:
     server: irc.example.org
     port: 6667
     channel: '#example'
+  # List of servers to connect to
+  whitelist:
+    - irc.example.org
   # List of servers to not connect to
   blacklist:
     - irc.example.org
