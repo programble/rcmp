@@ -13,6 +13,10 @@ require 'sinatra'
 Configru.load('rcmp.yml') do
   option :port, Fixnum, 8080
 
+  # Defaults to a list of known Github IPs
+  option_array :post_whitelist, String,
+    %w[207.97.227.253 50.57.128.197 108.171.174.178]
+
   option_group :irc do
     option :default_nick, String, 'RCMP'
     option_group :default_dest do
@@ -108,16 +112,25 @@ end
 # The real guts
 def send_payload(server, port, channel, payload)
   if Configru.irc.whitelist.any?
-    return unless Configru.irc.whitelist.include?(server)
+    halt 403 unless Configru.irc.whitelist.include?(server)
   else
-    return if Configru.irc.blacklist.include?(server)
+    halt 403 if Configru.irc.blacklist.include?(server)
+  end
+
+  parsed = JSON.parse(payload) rescue halt(400)
+  if parsed['commits'] # Payload from Github
+    halt 403 unless Configru.post_whitelist.include?(request.ip)
+    formatted = format_github_payload(parsed)
+  elsif parsed['commit'] # Payload from Travis
+    # TODO: Apply whitelist to Travis POSTs
+    formatted = format_travis_payload(parsed)
+  else # Unknown payload
+    halt 400
   end
 
   Connection.get(server, port) do |bot|
-    if formatted = format_payload(JSON.parse(payload))
-      bot.join(channel)
-      bot.Channel(channel).msg(formatted)
-    end
+    bot.join(channel)
+    bot.Channel(channel).msg(formatted)
   end
 end
 
@@ -130,16 +143,6 @@ def dagd(url)
 end
 
 IRC_BOLD = "\x02"
-
-def format_payload(payload)
-  if payload['commit']
-    format_travis_payload(payload)
-  elsif payload['commits']
-    format_github_payload(payload)
-  else
-    warn "Received unknown payload."
-  end
-end
 
 # Github stuff
 
