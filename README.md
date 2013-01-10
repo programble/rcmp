@@ -54,6 +54,11 @@ Configuration is stored in `rcmp.yml`.
 # HTTP port to listen for payloads on
 port: 8080
 
+# IPs to accept Github webhook POST requests from
+# Defaults to a list of known Github IPs
+post_whitelist:
+  - 127.0.0.1
+
 irc:
   # Default nick
   default_nick: RCMP
