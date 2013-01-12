@@ -15,7 +15,7 @@ Configru.load('rcmp.yml') do
 
   # Defaults to a list of known Github IPs
   option_array :post_whitelist, String,
-    %w[207.97.227.253 50.57.128.197 108.171.174.178]
+    %w[207.97.227.253 50.57.128.197 108.171.174.178 50.57.231.61]
 
   option_group :irc do
     option :default_nick, String, 'RCMP'
