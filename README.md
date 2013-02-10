@@ -54,8 +54,9 @@ Configuration is stored in `rcmp.yml`.
 # HTTP port to listen for payloads on
 port: 8080
 
-# IPs to accept Github webhook POST requests from
-# Defaults to a list of known Github IPs
+# CIDRs to accept Github webhook POST requests from
+# If this option is not provided, RCMP will fetch Github CIDRs from the
+# meta API endpoint as well as include 127.0.0.1/32.
 post_whitelist:
   - 127.0.0.1
 
