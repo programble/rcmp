@@ -7,15 +7,19 @@ require 'cinch/plugins/basic_ctcp'
 require 'cinch/plugins/identify'
 require 'configru'
 require 'json'
+require 'netaddr'
 require 'open-uri'
 require 'sinatra'
 
 Configru.load('rcmp.yml') do
   option :port, Fixnum, 8080
 
-  # Defaults to a list of known Github IPs
-  option_array :post_whitelist, String,
-    %w[207.97.227.253 50.57.128.197 108.171.174.178 50.57.231.61]
+  option_array :post_whitelist, String do
+    default ['127.0.0.1'] + JSON.parse(open('https://api.github.com/meta').read)['hooks']
+    transform do |cidr|
+      NetAddr::CIDR.create(cidr)
+    end
+  end
 
   option_group :irc do
     option :default_nick, String, 'RCMP'
@@ -119,7 +123,7 @@ def send_payload(server, port, channel, payload)
 
   parsed = JSON.parse(payload) rescue halt(400)
   if parsed['commits'] # Payload from Github
-    halt 403 unless Configru.post_whitelist.include?(request.ip)
+    halt 403 unless Configru.post_whitelist.any? {|cidr| cidr.matches? request.ip }
     formatted = format_github_payload(parsed)
   elsif parsed['commit'] # Payload from Travis
     # TODO: Apply whitelist to Travis POSTs

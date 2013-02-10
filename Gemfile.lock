@@ -9,6 +9,7 @@ GEM
     configru (3.1.0)
     daemons (1.1.9)
     eventmachine (1.0.0)
+    netaddr (1.5.0)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -30,5 +31,6 @@ DEPENDENCIES
   cinch-basic_ctcp (~> 1.0.0)
   cinch-identify (~> 1.4.0)
   configru (~> 3.1.0)
+  netaddr (~> 1.5.0)
   sinatra (~> 1.3.0)
   thin
