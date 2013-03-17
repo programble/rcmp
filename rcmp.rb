@@ -199,7 +199,7 @@ def format_travis_payload(payload)
   last_build = travis_last_build(payload['repository']['id'], payload['number'])
   build_passed = payload['status'].zero?
   last_build_passed = last_build['status'].zero?
-  
+
   build_status = if !build_passed && last_build_passed
     'failed'
   elsif build_passed && !last_build_passed
@@ -209,7 +209,7 @@ def format_travis_payload(payload)
   else # build_passed && last_build_passed
     'passed'
   end
-  
+
   s << IRC_BOLD << owner << '/' << repository << IRC_BOLD
   s << ': ' << payload['branch'] << ' '
   s << payload['commit'][0..7] << ' '
@@ -220,13 +220,13 @@ end
 
 def travis_last_build(repository_id, curr_build_number)
   last_build_number = (curr_build_number.to_i - 1).to_s
-  
+
   build_list = travis_build_list(repository_id)
-  
+
   last_build = build_list.find do |build|
     build['number'] == last_build_number
   end
-  
+
   travis_build_info(last_build['id'])
 end
 
