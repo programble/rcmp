@@ -176,7 +176,7 @@ end
 def format_commit(commit, url)
   return false if commit['message'].include? '[irc skip]'
   s = ''
-  s << commit['id'][0..7] << ' '
+  s << commit['id'][0..6] << ' '
   s << "<#{dagd(commit['url'])}> " if url
   s << IRC_BOLD << commit['author']['name'] << IRC_BOLD << ' '
   s << IRC_BOLD << '[' << IRC_BOLD
