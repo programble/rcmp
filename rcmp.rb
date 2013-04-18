@@ -212,7 +212,7 @@ def format_travis_payload(payload)
 
   s << IRC_BOLD << owner << '/' << repository << IRC_BOLD
   s << ': ' << payload['branch'] << ' '
-  s << payload['commit'][0..7] << ' '
+  s << payload['commit'][0..6] << ' '
   s << 'Build #' << payload['number'] << ' ' << build_status << '. '
   s << dagd(build_url)
   s
