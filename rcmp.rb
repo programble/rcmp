@@ -125,6 +125,8 @@ def send_payload(server, port, channel, payload)
   if parsed['commits'] # Payload from Github
     halt 403 unless Configru.post_whitelist.any? {|cidr| cidr.matches? request.ip }
     formatted = format_github_payload(parsed)
+  elsif parsed['custom_ci'] # Payload for custom CI implementations
+    formatted = format_custom_ci_payload(parsed)
   elsif parsed['commit'] # Payload from Travis
     # TODO: Apply whitelist to Travis POSTs
     formatted = format_travis_payload(parsed)
@@ -146,7 +148,7 @@ def dagd(url)
   end
 end
 
-IRC_BOLD = "\x02"
+IRC_BOLD = 2.chr
 
 # Github stuff
 
@@ -212,7 +214,7 @@ def format_travis_payload(payload)
 
   s << IRC_BOLD << owner << '/' << repository << IRC_BOLD
   s << ': ' << payload['branch'] << ' '
-  s << payload['commit'][0..6] << ' '
+  s << commit[0..6] << ' '
   s << 'Build #' << payload['number'] << ' ' << build_status << '. '
   s << dagd(build_url)
   s
@@ -236,4 +238,24 @@ end
 
 def travis_build_info(build_id)
   JSON.parse(open("https://api.travis-ci.org/builds/#{build_id}").read)
+end
+
+# Custom CI stuff
+
+def format_custom_ci_payload(payload)
+  s = ''
+  commit = payload['commit']
+  branch = payload['branch']
+  repository = payload['repository_name']
+  build_url = payload['results_url']
+  build_passed = payload['status']
+
+  build_status = build_passed == '0' ? 'passed' : 'failed'
+
+  s << IRC_BOLD << repository << IRC_BOLD
+  s << ': ' << branch << ' '
+  s << commit[0..6] << ' '
+  s << build_status << '. '
+  s << dagd(build_url)
+  s
 end
