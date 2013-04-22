@@ -55,6 +55,7 @@ Send JSON to any of the above URLs (listed in "Usage"), in the following format:
 
 ```json
 "payload": {
+  "custom_ci": true,
   "commit": "the commit hash",
   "branch": "the branch",
   "repository_name": "the repository name",
