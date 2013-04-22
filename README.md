@@ -46,6 +46,24 @@ notifications:
     - http://your.rcmp.instance/:server/:channel
 ```
 
+### Custom CI Integration
+
+If you use a CI system other than Travis CI, you can still have your commits
+announced.
+
+Send JSON to any of the above URLs (listed in "Usage"), in the following format:
+
+```json
+"payload": {
+  "custom_ci": true,
+  "commit": "the commit hash",
+  "branch": "the branch",
+  "repository_name": "the repository name",
+  "results_url": "where to find the output of the test suite",
+  "status": 0 for passing, anything else for failing
+}
+```
+
 ## Configuration
 
 Configuration is stored in `rcmp.yml`.
