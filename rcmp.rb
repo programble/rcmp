@@ -158,7 +158,7 @@ def format_github_payload(payload)
 
   s << IRC_BOLD << payload['repository']['owner']['name']
   s << '/' << payload['repository']['name'] << IRC_BOLD
-  s << ': ' << payload['ref'].split('/').last << ' '
+  s << ': ' << payload['ref'].split('/', 3).last << ' '
   if commits.length > 1
     s << "(#{commits.length}) "
     s << "<#{dagd(payload['compare'])}>\n"
