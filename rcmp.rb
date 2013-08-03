@@ -165,7 +165,7 @@ def format_github_payload(payload)
   end
 
   has_commit = false
-  commits[0..2].each do |commit|
+  commits.last(3).each do |commit|
     formatted_commit = format_commit(commit, commits.length == 1)
     if formatted_commit
       s << "#{formatted_commit}\n"
