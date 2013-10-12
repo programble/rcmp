@@ -1,4 +1,4 @@
 $LOAD_PATH << File.join(File.dirname(__FILE__), 'lib')
-%w[web].map {|r| require("rcmp/#{r}") }
+%w[config irc web].map {|r| require("rcmp/#{r}") }
 
 run RCMP::Web
