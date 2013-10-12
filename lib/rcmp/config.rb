@@ -1,6 +1,6 @@
 require 'configru'
 
-Configru.load('rcmp.yml') do
+Configru.load(ENV['CONFIG_FILE'] || 'rcmp.yml') do
   option_group :irc do
     option :nick, String, 'RCMP'
 
