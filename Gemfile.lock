@@ -4,9 +4,9 @@ GEM
     cinch (2.0.4)
     cinch-basic_ctcp (1.0.2)
       cinch (~> 2.0)
-    cinch-identify (1.4.1)
+    cinch-identify (1.5.0)
       cinch (~> 2.0)
-    configru (3.1.0)
+    configru (3.6.0)
     daemons (1.1.9)
     eventmachine (1.0.3)
     netaddr (1.5.0)
@@ -29,8 +29,8 @@ PLATFORMS
 DEPENDENCIES
   cinch (~> 2.0.0)
   cinch-basic_ctcp (~> 1.0.0)
-  cinch-identify (~> 1.4.0)
-  configru (~> 3.1.0)
+  cinch-identify (~> 1.5.0)
+  configru (~> 3.6.0)
   netaddr (~> 1.5.0)
   sinatra (~> 1.4.0)
   thin
