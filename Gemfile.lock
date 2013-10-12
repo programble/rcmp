@@ -9,7 +9,11 @@ GEM
     configru (3.6.0)
     daemons (1.1.9)
     eventmachine (1.0.3)
-    netaddr (1.5.0)
+    httparty (0.12.0)
+      json (~> 1.8)
+      multi_xml (>= 0.5.2)
+    json (1.8.0)
+    multi_xml (0.5.5)
     rack (1.5.2)
     rack-protection (1.5.0)
       rack
@@ -31,6 +35,6 @@ DEPENDENCIES
   cinch-basic_ctcp (~> 1.0.0)
   cinch-identify (~> 1.5.0)
   configru (~> 3.6.0)
-  netaddr (~> 1.5.0)
+  httparty (~> 0.12.0)
   sinatra (~> 1.4.0)
   thin
