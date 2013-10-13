@@ -20,6 +20,17 @@ encoded, i.e. `%23`. `:server` is either a server address (e.g.
 `irc.freenode.net`) or a server name/alias (e.g. `freenode` or `fn`).
 See [Configuration](#configuration) for details.
 
+All endpoints also accept the following query parameters:
+
+ * `key`: The key of the channel to send the notification to
+
+And the following query flags:
+
+ * `nojoin`: Do not join the channel before sending the notification
+   (channel must be `-n` for this to work)
+ * `part`: Part the channel after sending the notification
+ * `notice`: Send the notification using `NOTICE`
+
 ### GitHub
 
 Add the WebHook URL to the Service Hooks in your repository's Settings.
@@ -89,8 +100,10 @@ irc:
 
 The configuration file must contain at least one server named `default`,
 which will be the default destination for notifications. This server
-must also contain a `channel` key which will be the default channel for
-notifications.
+must also contain a `channel` option which will be the default channel for
+notifications. The default server can also contain `key`, `nojoin`, `part` and
+`notice` options that set the default query parameters for the default
+channel.
 
 ## License
 
