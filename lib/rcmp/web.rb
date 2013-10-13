@@ -19,10 +19,14 @@ module RCMP
         s['address'] == params[:server] ||
           s['alias'] == params[:server] ||
           s['alias'].include?(params[:server])
-      end
+      end[1]
       halt 400, 'unknown server' unless server
 
-      channel = params[:channel] || server['channel']
+      if params[:channel]
+        channel = '#' + params[:channel]
+      else
+        channel = server['channel']
+      end
 
       IRC[server].announce do |irc|
         irc.join(channel) unless irc.channels.include? channel
