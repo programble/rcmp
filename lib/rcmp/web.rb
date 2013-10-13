@@ -12,6 +12,7 @@ module RCMP
 
       type = [GitHub].find {|type| type.detect(payload) }
       halt 400, 'unknown payload type' unless type
+      halt 403, 'unknown payload source' unless type.verify(request)
 
       params[:server] ||= 'default'
       server = Configru.irc.servers[params[:server]]

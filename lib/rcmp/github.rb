@@ -1,9 +1,17 @@
+require 'ipaddr'
+
 module RCMP
   module GitHub
+    HOOK_IPS = ['204.232.175.64/27', '192.30.252.0/22'].map {|ip| IPAddr.new(ip) }
+
     module_function
 
     def detect(payload)
       payload['ref']
+    end
+
+    def verify(request)
+      HOOK_IPS.any? {|ip| ip.include? request.ip }
     end
 
     def format(payload)
