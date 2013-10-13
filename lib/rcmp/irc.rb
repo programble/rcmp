@@ -51,11 +51,11 @@ module RCMP
       @thread = Thread.new { start }
     end
 
-    def announce(channel, key, nojoin, part, msg)
+    def announce(channel, key, nojoin, part, notice, msg)
       block = proc do
         channel = Channel(channel)
         channel.join(key) unless nojoin
-        channel.msg(msg)
+        channel.msg(msg, notice)
         if part
           # HACK: Add the PART command to the same queue as the messages so
           # that we do not risk sending it before all lines of the message are
