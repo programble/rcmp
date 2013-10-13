@@ -37,13 +37,18 @@ module RCMP
             :username => c.nick,
             :password => nickserv
           }
-          c.delay_joins = :identified
         end
       end
 
       @connected = false
-      on :connect do
-        bot.connected = true
+      if server['nickserv']
+        on :identified do
+          bot.connected = true
+        end
+      else
+        on :connect do
+          bot.connected = true
+        end
       end
     end
 
