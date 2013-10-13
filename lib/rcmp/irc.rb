@@ -37,6 +37,7 @@ module RCMP
             :username => c.nick,
             :password => nickserv
           }
+          c.delay_joins = :identified
         end
       end
 
