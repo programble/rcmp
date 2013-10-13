@@ -13,22 +13,24 @@ module RCMP
       type = [GitHub].find {|type| type.detect(payload) }
       halt 400, 'unknown payload type' unless type
 
-      if server = params[:server]
-        port = params[:port] || 6667
-        channel = params[:channel]
-      else
-        server = Configru.irc['default'].server
-        port = Configru.irc['default'].port
-        channel = params[:channel] || Configru.irc['default'].channel
+      params[:server] ||= 'default'
+      server = Configru.irc.servers[params[:server]]
+      server ||= Configru.irc.servers.find do |n, s|
+        s['address'] == params[:server] ||
+          s['alias'] == params[:server] ||
+          s['alias'].include?(params[:server])
       end
+      halt 400, 'unknown server' unless server
 
-      IRC[server, port].announce do |irc|
+      channel = params[:channel] || server['channel']
+
+      IRC[server].announce do |irc|
         irc.join(channel) unless irc.channels.include? channel
         Channel(channel).msg(type.format(payload))
       end
     end
 
-    ['/:server/:port/:channel', '/:server/:channel', '/:channel', '/'].each do |route|
+    ['/:server/:channel', '/:channel', '/'].each do |route|
       post route do
         dispatch(params)
         'success'

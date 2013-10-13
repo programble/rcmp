@@ -4,34 +4,33 @@ require 'cinch/plugins/identify'
 
 module RCMP
   class IRC < Cinch::Bot
-    # @list[server][port] -> Connection
-    @@list = Hash.new {|h, k| h[k] = Hash.new }
+    @@list = Hash.new
 
-    def self.[](server, port)
-      if irc = @@list[server][port]
+    def self.[](server)
+      if irc = @@list[server]
         irc
       else
-        irc = self.new(server, port)
+        irc = self.new(server)
         irc.start!
-        @@list[server][port] = irc
+        @@list[server] = irc
       end
     end
 
     attr_accessor :connected
     attr_reader :thread, :announce_hook
 
-    def initialize(server, port)
+    def initialize(server)
       super()
 
       configure do |c|
-        c.nick = Configru.irc.nicks[server] || Configru.irc.nick
-        c.server = server
-        c.port = port
+        c.nick = server['nick']
+        c.server = server['address']
+        c.port = server['port'] || 6667
 
         c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
         c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]
 
-        if nickserv = Configru.irc.nickserv[server]
+        if nickserv = server['nickserv']
           c.plugins.plugins << Cinch::Plugins::Identify
           c.plugins.options[Cinch::Plugins::Identify] = {
             :type => :nickserv,
@@ -45,8 +44,6 @@ module RCMP
       on :connect do
         bot.connected = true
       end
-
-      @@list[server][port] = self
     end
 
     def start!
