@@ -25,13 +25,19 @@ module RCMP
 
       if params[:channel]
         channel = '#' + params[:channel]
+        key = params[:key]
+        nojoin, part, notice = %w[nojoin part notice].map do |flag|
+          params.include? flag
+        end
       else
         channel = server['channel']
+        key = server['key']
+        nojoin, part, notice = %w[nojoin part notice].map do |flag|
+          params.include?(flag) ? true : server[flag]
+        end
       end
 
-      IRC[server].announce(channel, params[:key], params.include?('nojoin'),
-                           params.include?('part'), params.include?('notice'),
-                           type.format(payload))
+      IRC[server].announce(channel, key, nojoin, part, notice, type.format(payload))
     end
 
     ['/:server/:channel', '/:channel', '/'].each do |route|
