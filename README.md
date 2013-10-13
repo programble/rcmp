@@ -38,6 +38,23 @@ notifications:
     - http://rcmp.instance/server/channel
 ```
 
+### Sample output
+
+```irc
+<RCMP> programble/rcmp: master f234586 <http://git.io/LMlhbQ> Curtis McEnroe [README.md] Update documentation
+```
+
+```irc
+<RCMP> programble/rcmp: master (11) <http://git.io/qbks9w>
+<RCMP> ebd6793 Curtis McEnroe [lib/rcmp/config.rb lib/rcmp/irc.rb lib/rcmp/web.rb] Change format for configuring IRC servers
+<RCMP> c3514e5 Curtis McEnroe [lib/rcmp/web.rb] Fix selecting server/channel from URI
+<RCMP> 51f504b Curtis McEnroe [lib/rcmp/github.rb lib/rcmp/web.rb] Add payload source verification
+```
+
+```irc
+<RCMP> programble/configru: master 88f6665 <http://da.gd/XcbB> build #68 passed
+```
+
 ## Set up
 
 First, fetch the dependencies using Bundler:
