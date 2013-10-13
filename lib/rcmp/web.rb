@@ -10,7 +10,7 @@ module RCMP
         halt 400, 'invalid payload'
       end
 
-      type = [GitHub, Travis].find {|type| type.detect(payload) }
+      type = [GitHub, Travis, Bitbucket].find {|type| type.detect(payload) }
       halt 400, 'unknown payload type' unless type
       halt 403, 'unknown payload source' unless type.verify(request)
 
