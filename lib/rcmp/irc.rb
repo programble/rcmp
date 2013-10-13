@@ -51,18 +51,18 @@ module RCMP
       @thread = Thread.new { start }
     end
 
-    def announce(channel, msg)
-      block = proc do |channel, msg|
+    def announce(channel, key, nojoin, msg)
+      block = proc do
         channel = Channel(channel)
-        channel.join
+        channel.join(key) unless nojoin
         channel.msg(msg)
       end
 
       if @connected
-        @callback.instance_exec(channel, msg, &block)
+        @callback.instance_exec(&block)
       else
         @announce_hook = on @connect_hook do
-          instance_exec(channel, msg, &block)
+          instance_exec(&block)
           bot.handlers.unregister(bot.announce_hook)
         end
       end

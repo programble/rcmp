@@ -29,7 +29,8 @@ module RCMP
         channel = server['channel']
       end
 
-      IRC[server].announce(channel, type.format(payload))
+      IRC[server].announce(channel, params[:key], params.include?('nojoin'),
+                           type.format(payload))
     end
 
     ['/:server/:channel', '/:channel', '/'].each do |route|
