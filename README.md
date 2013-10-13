@@ -1,108 +1,83 @@
 # RCMP
 
-RCMP is a low-maintenance Github commit notification IRC bot with Travis CI integration.
+RCMP is a low-maintenance VCS push notification IRC bot with support for
+GitHub, Bitbucket and Travis CI.
 
 ## Usage
 
-RCMP accepts Github and Travis webhook payloads POSTed to:
+RCMP accepts webhook POSTs on the following URLs:
 
-#### `/`
+ * `/`: Notification will be sent to default server and channel (see
+   [Configuration](#configuration))
+ * `/:channel`: Notification will be sent to `:channel` on default
+   server
+ * `/:server/:channel`: Notification will be sent to `:channel` on
+   `:server`
 
-Notification is sent to default destination.
+For all endpoints, `:channel` is the channel name without the leading
+`#`. For channels with two leading hashes, the second must be URL
+encoded, i.e. `%23`. `:server` is either a server address (e.g.
+`irc.freenode.net`) or a server name/alias (e.g. `freenode` or `fn`).
+See [Configuration](#configuration) for details.
 
-#### `/:server/:channel`
+### GitHub
 
-Example: `/example.org/example`
+Add the WebHook URL to the Service Hooks in your repository's Settings.
 
-Notification is sent to `:server` on port 6667 in `:channel`.
+### Bitbucket
 
-#### `/:server/:port/:channel`
+Add a POST Hook in your repository's Administration page.
 
-Example: `/example.org/6667/example`
+### Travis CI
 
-Notification is sent to `:server` on `:port` in `:channel`.
-
-### Example Output
-
-```
-<RCMP> programble/rcmp: master cbde68d1 <http://da.gd/AHm70> Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
-```
-
-```
-<RCMP> programble/rcmp: master (3) <http://da.gd/AHm70>
-<RCMP> d1ec92fd Curtis McEnroe [Gemfile.lock] Update Gemfile.lock
-<RCMP> 72d05d24 Curtis McEnroe [README.md] Remove stillmaintained badge
-<RCMP> cbde68d1 Curtis McEnroe [Gemfile Gemfile.lock rcmp.rb] Update to Configru 3.0.0
-```
-
-### Travis Integration
-
-To have RCMP announce Travis build results for a project, add the
-following to your `.travis.yml`.
+Add the following to your project's `.travis.yml`:
 
 ```yaml
 notifications:
   webhooks:
-    - http://your.rcmp.instance/:server/:channel
+    - http://rcmp.instance/server/channel
 ```
 
-### Custom CI Integration
+## Set up
 
-If you use a CI system other than Travis CI, you can still have your commits
-announced.
+First, fetch the dependencies using Bundler:
 
-Send JSON to any of the above URLs (listed in "Usage"), in the following format:
-
-```json
-"payload": {
-  "custom_ci": true,
-  "commit": "the commit hash",
-  "branch": "the branch",
-  "repository_name": "the repository name",
-  "results_url": "where to find the output of the test suite",
-  "status": 0 for passing, anything else for failing
-}
+```sh
+bundle install
 ```
 
-## Configuration
+Start RCMP using Rack's `rackup` command.
 
-Configuration is stored in `rcmp.yml`.
+### Configuration
+
+RCMP loads server configuration from the YAML file specified in the
+`CONFIG_FILE` environment variable, or by default `rcmp.yml`.
+
+The configuration file format is the following:
 
 ```yaml
-# HTTP port to listen for payloads on
-port: 8080
-
-# CIDRs to accept Github webhook POST requests from
-# If this option is not provided, RCMP will fetch Github CIDRs from the
-# meta API endpoint as well as include 127.0.0.1/32.
-post_whitelist:
-  - 127.0.0.1
-
 irc:
-  # Default nick
-  default_nick: RCMP
-  # Server-specific nicks
-  nicks:
-    irc.example.org: potato
-  # NickServ passwords
-  nickserv:
-    irc.example.org: password
-  # Default notification destination (for POSTs to /)
-  default_dest:
-    server: irc.example.org
-    port: 6667
-    channel: '#example'
-  # List of servers to connect to
-  whitelist:
-    - irc.example.org
-  # List of servers to not connect to
-  blacklist:
-    - irc.example.org
+  servers:
+    name:
+      address: irc.example.com
+      port: 6667 # optional
+      nick: RCMP
+      nickserv: password # optional
+      alias: # optional
+        - example
+        - ex
+    othername:
+      # ...
 ```
+
+The configuration file must contain at least one server named `default`,
+which will be the default destination for notifications. This server
+must also contain a `channel` key which will be the default channel for
+notifications.
 
 ## License
 
-Copyright (c) 2011-2012, Curtis McEnroe <programble@gmail.com>
+Copyright © 2011-2013, Curtis McEnroe <programble@gmail.com>
 
 Permission to use, copy, modify, and/or distribute this software for any
 purpose with or without fee is hereby granted, provided that the above
