@@ -3,7 +3,7 @@ module RCMP
     module_function
 
     def detect(payload)
-      payload['ref'] && payload['commits']
+      payload['ref']
     end
 
     def format(payload)
