@@ -41,14 +41,9 @@ module RCMP
       end
 
       @connected = false
-      if server['nickserv']
-        on :identified do
-          bot.connected = true
-        end
-      else
-        on :connect do
-          bot.connected = true
-        end
+      @connect_hook = server['nickserv'] ? :identified : :connect
+      on @connect_hook do
+        bot.connected = true
       end
     end
 
@@ -60,7 +55,7 @@ module RCMP
       if @connected
         @callback.instance_exec(self, &block)
       else
-        @announce_hook = on :connect do
+        @announce_hook = on @connect_hook do
           instance_exec(bot, &block)
           bot.handlers.unregister(bot.announce_hook)
         end
