@@ -51,11 +51,21 @@ module RCMP
       @thread = Thread.new { start }
     end
 
-    def announce(channel, key, nojoin, msg)
+    def announce(channel, key, nojoin, part, msg)
       block = proc do
         channel = Channel(channel)
         channel.join(key) unless nojoin
         channel.msg(msg)
+        if part
+          # HACK: Add the PART command to the same queue as the messages so
+          # that we do not risk sending it before all lines of the message are
+          # sent
+          bot.irc.instance_exec do
+            @queue.instance_exec do
+              @queues[channel.name] << "PART #{channel.name}"
+            end
+          end
+        end
       end
 
       if @connected
