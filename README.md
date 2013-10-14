@@ -81,7 +81,7 @@ Start RCMP using Rack's `rackup` command.
 
 ### Configuration
 
-RCMP optionally redirects `GET` requests to `/` to the URL specified by
+RCMP optionally redirects `GET` requests for `/` to the URL specified by
 the `ROOT_REDIRECT` environment variable.
 
 RCMP loads server configuration from the YAML file specified in the
