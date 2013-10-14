@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RCMP</title>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.no-icons.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css">
+
+    <style>
+      #url, #travis { font-family: monospace; }
+      #travis { overflow: hidden; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="page-header">
+        <div class="pull-right">
+          <a class="btn btn-primary" href="https://github.com/programble/rcmp">
+            <i class="icon-github"></i> GitHub
+          </a>
+        </div>
+
+        <h1>RCMP</h1>
+      </div>
+
+      <p class="lead">
+        A low-maintenance VCS push notification IRC bot with support
+        for GitHub, Bitbucket and Travis CI.
+      </p>
+
+      <p>
+        <input id="url" class="form-control input-lg" type="url" readonly>
+      </p>
+
+      <div class="row">
+        <div class="col-sm-6">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label for="server" class="control-label col-md-4">Server</label>
+              <div class="col-md-8">
+                <select id="server" class="form-control">
+                  <option>freenode</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="channel" class="control-label col-md-4">Channel</label>
+              <div class="col-md-8">
+                <div class="input-group">
+                  <span class="input-group-addon">#</span>
+                  <input id="channel" type="text" class="form-control" value="example">
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="key" class="control-label col-md-4">Key</label>
+              <div class="col-md-8">
+                <input id="key" type="text" class="form-control">
+              </div>
+            </div>
+          </form>
+        </div>
+
+        <div class="col-sm-6">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <div class="col-md-offset-4 col-md-8">
+                <div class="checkbox">
+                  <label title="Join channel before sending notification">
+                    <input id="join" type="checkbox" checked> Join
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-md-offset-4 col-md-8">
+                <div class="checkbox">
+                  <label title="Part channel after sending notification">
+                    <input id="part" type="checkbox"> Part
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="col-md-offset-4 col-md-8">
+                <div class="checkbox">
+                  <label title="Send notification as NOTICE">
+                    <input id="notice" type="checkbox"> Notice
+                  </label>
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+    <script src="url.js"></script>
+  </body>
+</html>
