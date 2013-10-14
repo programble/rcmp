@@ -48,6 +48,9 @@ module RCMP
     end
 
     get '/' do
+      if url = ENV['ROOT_REDIRECT']
+        redirect url
+      end
       'pong'
     end
   end
