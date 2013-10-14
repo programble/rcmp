@@ -1,3 +1,5 @@
+---
+---
 <!DOCTYPE html>
 <html>
   <head>
@@ -31,7 +33,7 @@
 
       <h3>Webhook</h3>
       <p>
-        <input id="url" class="form-control input-lg" type="url" readonly>
+        <input id="url" class="form-control input-lg" type="url" default="{{ site.canon_url }}" readonly>
       </p>
 
       <div class="row">
@@ -41,7 +43,9 @@
               <label for="server" class="control-label col-md-4">Server</label>
               <div class="col-md-8">
                 <select id="server" class="form-control">
-                  <option>freenode</option>
+                  {% for server in site.servers %}
+                    <option>{{ server }}</option>
+                  {% endfor %}
                 </select>
               </div>
             </div>

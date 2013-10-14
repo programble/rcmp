@@ -1,6 +1,6 @@
 $(function() {
   function generateURL() {
-    var url = 'http://rcmp.pw/';
+    var url = $('#url').attr('default');
     url += $('#server').val();
     url += '/';
     url += encodeURIComponent($('#channel').val());
