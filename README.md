@@ -31,6 +31,9 @@ And the following query flags:
  * `part`: Part the channel after sending the notification
  * `notice`: Send the notification using `NOTICE`
 
+RCMP will not send notifications for commits with messages containing
+`[irc skip]`.
+
 ### GitHub
 
 Add the WebHook URL to the Service Hooks in your repository's Settings.
