@@ -26,6 +26,9 @@ module RCMP
         c.nick = server['nick']
         c.server = server['address']
         c.port = server['port'] || 6667
+        c.realname = server['realname'] unless server['realname'].nil?
+        c.user = server['user'] unless server['user'].nil?
+        c.ssl.use = server['ssl'] || false
 
         c.plugins.plugins = [Cinch::Plugins::BasicCTCP]
         c.plugins.options[Cinch::Plugins::BasicCTCP][:commands] = [:version, :time, :ping]

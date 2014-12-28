@@ -15,7 +15,7 @@ module RCMP
     end
 
     def format(payload)
-      repo = payload['repository']['owner']['name'] + '/' + payload['repository']['name']
+      repo = payload['repository']['full_name']
       branch = payload['ref'].split('/', 3).last
       commits = payload['commits'].reject do |commit|
         commit['message'].include? '[irc skip]'
